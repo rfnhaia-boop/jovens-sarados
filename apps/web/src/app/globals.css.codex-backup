@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Vidro padrão — cards, painéis */
+  .glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.2),
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /* Vidro mais denso — modais, sidebar */
+  .glass-strong {
+    background: rgba(15, 22, 42, 0.35);
+    backdrop-filter: blur(35px) saturate(160%);
+    -webkit-backdrop-filter: blur(35px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+      0 12px 40px 0 rgba(0, 0, 0, 0.3),
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  /* Vidro clicável com brilho e elevação no hover */
+  .glass-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+  .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 
+      0 20px 40px 0 rgba(0, 0, 0, 0.25),
+      inset 0 1px 2px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+  .glass-hover:active {
+    transform: translateY(0);
+  }
+
+  /* Pinned card style - amber / gold warm tint */
+  .glass-pinned {
+    background: rgba(251, 191, 36, 0.05);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    border-top: 1px solid rgba(251, 191, 36, 0.45);
+    border-left: 1px solid rgba(251, 191, 36, 0.45);
+    box-shadow: 
+      0 8px 32px 0 rgba(251, 191, 36, 0.15),
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  
+  .glass-pinned-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+  .glass-pinned-hover:hover {
+    background: rgba(251, 191, 36, 0.09);
+    border-color: rgba(251, 191, 36, 0.45);
+    box-shadow: 
+      0 20px 40px 0 rgba(251, 191, 36, 0.25),
+      inset 0 1px 2px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+  .glass-pinned-hover:active {
+    transform: translateY(0);
+  }
+
+  /* Apple-style glass button (Pill, highly tactile) */
+  .btn-apple {
+    @apply flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 ease-out active:scale-[0.97] shadow-md;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  .btn-apple:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    box-shadow: 
+      0 8px 24px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-apple-primary {
+    @apply flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ease-out active:scale-[0.97] shadow-lg;
+    background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    box-shadow: 
+      0 8px 20px rgba(249, 115, 22, 0.35),
+      inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  }
+  .btn-apple-primary:hover {
+    background: linear-gradient(135deg, #fcd34d 0%, #ea580c 100%);
+    transform: translateY(-1px);
+    box-shadow: 
+      0 12px 24px rgba(249, 115, 22, 0.5),
+      inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  }
+  .btn-apple-primary:disabled {
+    @apply opacity-50 cursor-not-allowed scale-100;
+  }
+
+  /* Form controls styled as dark glass input */
+  .input-glass {
+    @apply w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition-all duration-300;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  .input-glass:focus {
+    @apply border-white/35 bg-black/30;
+    box-shadow: 
+      0 0 0 4px rgba(255, 255, 255, 0.05),
+      inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Fundo do app — profundidade pro vidro aparecer */
+.app-bg {
+  background-image: linear-gradient(rgba(11, 18, 32, 0.52), rgba(11, 18, 32, 0.58)), url('/bg-glass.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Orbs decorativos borrados */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+

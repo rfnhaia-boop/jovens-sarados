@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  LEADER
+  SERVANT
+  MEMBER
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+enum EventStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+}
+
+model Ministry {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  users     User[]
+  media     Media[]
+  folders   Folder[]
+  events    CalendarEvent[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(MEMBER)
+  avatarUrl    String?
+  ministryId   String
+  ministry     Ministry @relation(fields: [ministryId], references: [id])
+  createdAt    DateTime @default(now())
+  uploads      Media[]  @relation("UploadedBy")
+  events       CalendarEvent[] @relation("CreatedBy")
+}
+
+model Folder {
+  id         String   @id @default(cuid())
+  name       String
+  ministryId String
+  ministry   Ministry @relation(fields: [ministryId], references: [id])
+  parentId   String?
+  parent     Folder?  @relation("SubFolders", fields: [parentId], references: [id])
+  children   Folder[] @relation("SubFolders")
+  media      Media[]
+  createdAt  DateTime @default(now())
+}
+
+model Media {
+  id           String    @id @default(cuid())
+  name         String
+  type         MediaType
+  url          String
+  thumbnailUrl String?
+  size         Int
+  tags         String[]
+  folderId     String?
+  folder       Folder?   @relation(fields: [folderId], references: [id])
+  ministryId   String
+  ministry     Ministry  @relation(fields: [ministryId], references: [id])
+  uploadedById String
+  uploadedBy   User      @relation("UploadedBy", fields: [uploadedById], references: [id])
+  events       CalendarEvent[] @relation("EventMedia")
+  createdAt    DateTime  @default(now())
+}
+
+model CalendarEvent {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  platform    String?
+  status      EventStatus @default(DRAFT)
+  ministryId  String
+  ministry    Ministry    @relation(fields: [ministryId], references: [id])
+  createdById String
+  createdBy   User        @relation("CreatedBy", fields: [createdById], references: [id])
+  media       Media[]     @relation("EventMedia")
+  createdAt   DateTime    @default(now())
+}

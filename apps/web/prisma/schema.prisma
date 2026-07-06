@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Categoria: agrupa mídias por PESSOA (ex: Guilherme) ou EVENTO (ex: Carreão)
+model Category {
+  id        String          @id @default(cuid())
+  name      String
+  type      String // PERSON | EVENT | OTHER
+  createdAt DateTime        @default(now())
+  media     MediaCategory[]
+
+  @@unique([name, type])
+}
+
+// Mídia: foto, reels ou story guardado na galeria
+model Media {
+  id         String          @id @default(cuid())
+  name       String
+  kind       String // PHOTO | REELS | STORY
+  url        String
+  thumbUrl   String?
+  size       Int             @default(0)
+  takenOn    DateTime? // dia em que a mídia foi feita
+  createdAt  DateTime        @default(now())
+  categories MediaCategory[]
+}
+
+// Liga mídia a categorias (uma foto pode ter várias: pessoa + evento)
+model MediaCategory {
+  mediaId    String
+  categoryId String
+  media      Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([mediaId, categoryId])
+}
+
+// Aviso / Comunicado publicado por líder, com alcance definido
+model Notice {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  scope     String // COMUNICACAO | SERVOS | MEMBROS
+  pinned    Boolean  @default(false)
+  author    String   @default("Rafael")
+  createdAt DateTime @default(now())
+}
+
+// Célula: grupo que agrupa os servos (ex: Célula Norte)
+model Cell {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  people    Person[]
+}
+
+// Ministério: Comunicação, Louvor, Acolhimento... (transversal)
+model Ministry {
+  id          String               @id @default(cuid())
+  name        String
+  slug        String               @unique
+  active      Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  memberships MinistryMembership[]
+}
+
+// Pessoa que serve: líder geral, líder de célula ou servo
+model Person {
+  id           String               @id @default(cuid())
+  name         String
+  email        String               @unique
+  passwordHash String? // preenchido na camada de login (2ª camada)
+  role         String               @default("SERVANT") // GENERAL_LEADER | CELL_LEADER | SERVANT
+  cellId       String?
+  cell         Cell?                @relation(fields: [cellId], references: [id])
+  createdAt    DateTime             @default(now())
+  memberships  MinistryMembership[]
+  sessions     Session[]
+}
+
+// Sessão de login (token guardado em cookie httpOnly)
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  personId  String
+  person    Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// Aula do módulo Aprendizado (como tirar foto/reels/stories, Instagram, cursos)
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String // FOTO | REELS | STORIES | INSTAGRAM | GERAL
+  videoUrl    String? // link do YouTube/Vimeo
+  content     String? // texto de apoio
+  createdAt   DateTime @default(now())
+}
+
+// Recurso da Biblioteca do Jovem Sarado (presets, PDFs, links, arquivos)
+model Resource {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  type        String // PRESET | PDF | LINK | ARQUIVO
+  url         String // link externo ou /uploads/...
+  createdAt   DateTime @default(now())
+}
+
+// Cache dos dados do Instagram (atualizado via Apify)
+model InstagramCache {
+  id        String   @id // username, ex: js.varzeapaulista
+  data      String // JSON com perfil + últimos posts
+  updatedAt DateTime @updatedAt
+}
+
+// Post agendado no calendário de conteúdo
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime // dia do post
+  platform    String // INSTAGRAM | STORIES | REELS | OUTRO
+  status      String   @default("PLANEJADO") // PLANEJADO | PUBLICADO
+  createdAt   DateTime @default(now())
+}
+
+// Liga uma pessoa a um ministério (com aprovação). Pode ter vários.
+model MinistryMembership {
+  id         String   @id @default(cuid())
+  personId   String
+  ministryId String
+  status     String   @default("PENDING") // PENDING | APPROVED
+  createdAt  DateTime @default(now())
+  person     Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  ministry   Ministry @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+
+  @@unique([personId, ministryId])
+}
