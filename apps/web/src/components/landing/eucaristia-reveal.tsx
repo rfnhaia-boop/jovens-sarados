@@ -57,7 +57,7 @@ export function EucaristiaReveal() {
   const textShown = Math.max(0, (ease - 0.5) / 0.5);
 
   return (
-    <section ref={ref} className="relative h-[250vh] bg-[#0c0a09]">
+    <section ref={ref} className="relative h-[250vh] bg-[#070707]">
       {/* Container Sticky que trava e preenche a tela inteira (h-screen w-full) */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-black flex items-center justify-center">
         
@@ -97,7 +97,7 @@ export function EucaristiaReveal() {
 
         {/* Cortina Esquerda (Preenche a metade esquerda da tela e desliza) */}
         <div
-          className="absolute left-0 top-0 z-20 grid h-full w-1/2 grid-cols-2 grid-rows-2 gap-3 p-3 will-change-transform bg-[#0c0a09] border-r border-white/5"
+          className="absolute left-0 top-0 z-20 grid h-full w-1/2 grid-cols-2 grid-rows-2 gap-3 p-3 will-change-transform bg-[#070707] border-r border-white/5"
           style={{
             transform: `translateX(-${shift}%) scale(${panelScale})`,
           }}
@@ -116,7 +116,7 @@ export function EucaristiaReveal() {
 
         {/* Cortina Direita (Preenche a metade direita da tela e desliza) */}
         <div
-          className="absolute right-0 top-0 z-20 grid h-full w-1/2 grid-cols-2 grid-rows-2 gap-3 p-3 will-change-transform bg-[#0c0a09] border-l border-white/5"
+          className="absolute right-0 top-0 z-20 grid h-full w-1/2 grid-cols-2 grid-rows-2 gap-3 p-3 will-change-transform bg-[#070707] border-l border-white/5"
           style={{
             transform: `translateX(${shift}%) scale(${panelScale})`,
           }}

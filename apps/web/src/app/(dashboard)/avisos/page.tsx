@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Megaphone, Plus, X, Pin, Trash2, Calendar, AlertCircle, Pencil } from "lucide-react";
+import { toast } from "@/components/ui/toast";
 
 type Notice = {
   id: string;
@@ -63,7 +64,12 @@ export default function AvisosPage() {
   }, []);
 
   async function remove(id: string) {
-    await fetch(`/api/notices/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/notices/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      toast("Aviso apagado.");
+    } else {
+      toast("Não foi possível apagar o aviso.", "error");
+    }
     load();
   }
 
@@ -86,8 +92,24 @@ export default function AvisosPage() {
       </header>
 
       {loading ? (
-        <div className="flex h-60 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="glass rounded-3xl p-6 space-y-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="skeleton h-5 w-2/3" />
+                <div className="skeleton h-8 w-8 rounded-full" />
+              </div>
+              <div className="space-y-2">
+                <div className="skeleton h-3.5 w-full" />
+                <div className="skeleton h-3.5 w-5/6" />
+                <div className="skeleton h-3.5 w-3/5" />
+              </div>
+              <div className="flex items-center justify-between pt-3">
+                <div className="skeleton h-6 w-28 rounded-full" />
+                <div className="skeleton h-3.5 w-20" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : notices.length === 0 ? (
         <div className="glass flex flex-col items-center justify-center rounded-3xl border-dashed border-white/10 py-24 text-center">
@@ -219,6 +241,7 @@ function NoticeDialog({
       });
     }
     setSaving(false);
+    toast(isEdit ? "Aviso atualizado!" : "Aviso publicado!");
     if (!isEdit) {
       setTitle("");
       setBody("");

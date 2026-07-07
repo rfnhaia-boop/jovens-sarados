@@ -88,7 +88,7 @@ function NextMeetingCountdown() {
   return (
     <div className="glass rounded-[2.5rem] p-8 border-white/10 shadow-xl max-w-3xl mx-auto mb-12 relative overflow-hidden bg-gradient-to-r from-white/[0.01] via-white/[0.03] to-white/[0.01]">
       <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl pointer-events-none" />
       
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
         <div className="text-center md:text-left space-y-2">
@@ -213,38 +213,49 @@ export default function ComunidadePage() {
     <div className="app-bg relative min-h-screen overflow-x-hidden text-white scroll-smooth">
       {/* Orbs de fundo */}
       <div className="orb left-[-4rem] top-[-4rem] h-96 w-96 bg-amber-500/25" />
-      <div className="orb right-[-4rem] top-[30%] h-80 w-80 bg-rose-500/15" />
-      <div className="orb bottom-[-8rem] left-[20%] h-[30rem] w-[30rem] bg-indigo-500/20" />
+      <div className="orb right-[-4rem] top-[30%] h-80 w-80 bg-amber-500/15" />
+      <div className="orb bottom-[-8rem] left-[20%] h-[30rem] w-[30rem] bg-orange-500/10" />
 
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Topo / Header */}
-        <header className="sticky top-0 z-20 px-4 py-4 sm:px-6">
-          <div className="glass mx-auto max-w-5xl flex items-center justify-between rounded-full px-6 py-3.5 shadow-lg border-t-white/20 border-l-white/20">
+        <header className="sticky top-0 z-50 w-full px-4 py-4 sm:px-6 backdrop-blur-md bg-[#05070f]/15 border-b border-white/5 transition-all">
+          <div className="glass mx-auto flex max-w-6xl items-center justify-between rounded-2xl px-5 py-3.5 shadow-lg border-white/10">
             <div className="flex items-center gap-3">
               <Link
                 href="/"
-                title="Voltar"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+                title="Voltar ao início"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white mr-1"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Link>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 border border-white/10 shadow-sm">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 shadow-sm">
                 <Tau className="h-5.5 w-5.5" />
               </div>
-              <div className="leading-tight">
-                <p className="text-sm font-bold tracking-tight">Jovens Sarados</p>
-                <p className="text-[10px] text-white/50 uppercase tracking-wider font-semibold">Várzea Paulista</p>
+              <div className="leading-tight text-left">
+                <p className="text-sm font-black tracking-tight text-white">Jovens Sarados</p>
+                <p className="text-[9px] font-medium uppercase tracking-wider text-white/50">
+                  Paróquia Cristo Redentor · Várzea Paulista
+                </p>
               </div>
             </div>
-            <a
-              href="https://www.instagram.com/js.varzeapaulista/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-apple-primary px-5 py-2 text-xs font-bold"
-            >
-              <Instagram className="h-3.5 w-3.5" />
-              Seguir
-            </a>
+            
+            <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-white/70">
+              <Link href="/#missao" className="hover:text-white transition">Nossa Missão</Link>
+              <Link href="/#pedrinhas" className="hover:text-white transition">5 Pedrinhas</Link>
+              <Link href="/#projetos" className="hover:text-white transition">Frentes de Missão</Link>
+              <Link href="/#galeria" className="hover:text-white transition">Galeria</Link>
+              <Link href="/#acolhimento" className="hover:text-white transition">Como Participar</Link>
+              <Link href="/comunidade" className="text-white font-bold transition flex items-center gap-1">
+                <Megaphone className="h-3.5 w-3.5 text-blue-400" />
+                Mural de Avisos
+              </Link>
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <Link href="/login" className="btn-apple bg-white/5 hover:bg-white/10 text-white border-white/10 px-5 py-2 text-xs">
+                Painel do Servo
+              </Link>
+            </div>
           </div>
         </header>
 
