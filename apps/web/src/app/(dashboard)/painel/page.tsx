@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Images, Calendar, HardDrive, Users, ArrowRight } from "lucide-react";
 
 const stats = [
@@ -8,13 +11,21 @@ const stats = [
 ];
 
 export default function PainelPage() {
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => (r.ok ? r.json() : { user: null }))
+      .then((d) => { if (d.user?.name) setUserName(d.user.name.split(" ")[0]); });
+  }, []);
+
   return (
     <div className="mx-auto max-w-6xl p-6 sm:p-8">
       <header className="mb-8 flex flex-col justify-between gap-4 border-b border-white/10 pb-8 md:flex-row md:items-end">
         <div>
           <p className="eyebrow mb-3">Painel de comunicação</p>
           <h1 className="text-3xl font-black tracking-tight text-white">
-          Olá, Rafael 👋
+            {userName ? `Olá, ${userName} 👋` : "Carregando..."}
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-white/60">
             Um resumo rápido para organizar avisos, mídia e calendário do ministério.
