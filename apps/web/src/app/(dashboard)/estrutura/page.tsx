@@ -85,6 +85,7 @@ export default function EstruturaPage() {
   const [leaderName, setLeaderName] = useState("");
   const [leaderEmail, setLeaderEmail] = useState("");
   const [savingCell, setSavingCell] = useState(false);
+  const [leaderPassword, setLeaderPassword] = useState("");
   const [minName, setMinName] = useState("");
   const [savingMin, setSavingMin] = useState(false);
 
@@ -109,10 +110,10 @@ export default function EstruturaPage() {
     await fetch("/api/cells", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: cellName, leaderName, leaderEmail }),
+      body: JSON.stringify({ name: cellName, leaderName, leaderEmail, leaderPassword }),
     });
     setSavingCell(false);
-    setCellName(""); setLeaderName(""); setLeaderEmail("");
+    setCellName(""); setLeaderName(""); setLeaderEmail(""); setLeaderPassword("");
     load();
   }
 
@@ -213,9 +214,10 @@ export default function EstruturaPage() {
               </div>
               <div className="mb-5 space-y-2 rounded-2xl border border-white/10 bg-black/10 p-4">
                 <input value={cellName} onChange={(e) => setCellName(e.target.value)} placeholder="Nome da célula (ex: Célula Norte)" className="input-glass" />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <input value={leaderName} onChange={(e) => setLeaderName(e.target.value)} placeholder="Líder da célula" className="input-glass" />
                   <input value={leaderEmail} onChange={(e) => setLeaderEmail(e.target.value)} placeholder="E-mail do líder" className="input-glass" />
+                  <input type="password" value={leaderPassword} onChange={(e) => setLeaderPassword(e.target.value)} placeholder="Senha do líder" className="input-glass" />
                 </div>
                 <button onClick={addCell} disabled={savingCell || !cellName.trim()} className="btn-apple-primary w-full">
                   <Plus className="h-4 w-4" /> {savingCell ? "Salvando..." : "Cadastrar célula"}
@@ -293,6 +295,7 @@ function LeadershipTab({
   const [newMode, setNewMode] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [saving, setSaving] = useState(false);
 
   const generals = people.filter((p) => p.role === "GENERAL_LEADER");
@@ -323,6 +326,7 @@ function LeadershipTab({
         name: "Sem célula",
         leaderName: newName,
         leaderEmail: newEmail,
+        leaderPassword: newPassword,
       }),
     });
     // Find the newly created person and promote
@@ -338,6 +342,7 @@ function LeadershipTab({
     setSaving(false);
     setNewName("");
     setNewEmail("");
+    setNewPassword("");
     setNewMode(false);
     setPromoteRole(null);
     onChanged();
@@ -516,9 +521,16 @@ function LeadershipTab({
                   placeholder="E-mail"
                   className="input-glass"
                 />
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Senha de acesso"
+                  className="input-glass"
+                />
                 <button
                   onClick={createNew}
-                  disabled={saving || !newName.trim() || !newEmail.trim()}
+                  disabled={saving || !newName.trim() || !newEmail.trim() || !newPassword.trim()}
                   className="btn-apple-primary w-full"
                 >
                   {saving ? "Criando..." : "Criar líder"}

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { isLeader } from "@/lib/roles";
+import { hashPassword } from "@/lib/password";
 
 // Lista células com contagem de pessoas
 export async function GET() {
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
   if (!isLeader(user?.role)) {
     return NextResponse.json({ message: "Sem permissão." }, { status: 403 });
   }
-  const { name, leaderName, leaderEmail } = await req.json();
+  const { name, leaderName, leaderEmail, leaderPassword } = await req.json();
   if (!name?.trim()) {
     return NextResponse.json(
       { message: "Nome da célula é obrigatório." },
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
       data: {
         name: leaderName.trim(),
         email: leaderEmail.trim().toLowerCase(),
+        passwordHash: leaderPassword ? hashPassword(leaderPassword) : null,
         role: "CELL_LEADER",
         cellId: cell.id,
       },
