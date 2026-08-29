@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Home, Church, Plus, Users, UserCog, Crown, Shield, ChevronDown, ChevronRight as ChevRight, X } from "lucide-react";
+import { Home, Church, Plus, Users, UserCog, Crown, Shield, ChevronDown, ChevronRight as ChevRight, X, Pencil, Save } from "lucide-react";
 import { isLeader } from "@/lib/roles";
 
 type Cell = {
@@ -70,6 +70,7 @@ export default function EstruturaPage() {
   const [people, setPeople] = useState<PersonAPI[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"tree" | "leadership" | "cells" | "ministries">("tree");
+  const [editPerson, setEditPerson] = useState<PersonAPI | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -188,7 +189,7 @@ export default function EstruturaPage() {
               {grouped.map(([role, members]) => {
                 const Icon = ROLE_ICON[role] ?? Users;
                 return (
-                  <TreeGroup key={role} role={role} icon={Icon} members={members} ministries={ministries} />
+                  <TreeGroup key={role} role={role} icon={Icon} members={members} ministries={ministries} onEdit={setEditPerson} />
                 );
               })}
               {people.length === 0 && (
@@ -277,6 +278,99 @@ export default function EstruturaPage() {
           )}
         </>
       )}
+
+      {editPerson && (
+        <EditPersonModal
+          person={editPerson}
+          cells={cells}
+          onClose={() => setEditPerson(null)}
+          onSaved={() => { setEditPerson(null); load(); }}
+        />
+      )}
+    </div>
+  );
+}
+
+function EditPersonModal({
+  person,
+  cells,
+  onClose,
+  onSaved,
+}: {
+  person: PersonAPI;
+  cells: Cell[];
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = useState(person.name);
+  const [email, setEmail] = useState((person as PersonAPI & { email?: string }).email ?? "");
+  const [role, setRole] = useState(person.role);
+  const [cellId, setCellId] = useState(person.cell?.id ?? "");
+  const [password, setPassword] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    setSaving(true);
+    await fetch(`/api/people/${person.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name.trim(),
+        email: email.trim() || undefined,
+        role,
+        cellId: cellId || null,
+        ...(password.trim() ? { password: password.trim() } : {}),
+      }),
+    });
+    setSaving(false);
+    onSaved();
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-md">
+      <div className="glass-strong w-full max-w-md rounded-3xl p-6 text-white">
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="text-lg font-bold">Editar Servo</h2>
+          <button onClick={onClose} className="text-white/60 hover:text-white">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="space-y-3">
+          <div>
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-white/40">Nome</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} className="input-glass" />
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-white/40">E-mail</label>
+            <input value={email} onChange={(e) => setEmail(e.target.value)} className="input-glass" />
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-white/40">Cargo</label>
+            <select value={role} onChange={(e) => setRole(e.target.value)} className="input-glass">
+              <option value="GENERAL_LEADER">Líder Geral</option>
+              <option value="NUCLEUS_LEADER">Líder de Núcleo</option>
+              <option value="CELL_LEADER">Líder de Célula</option>
+              <option value="SERVANT">Servo</option>
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-white/40">Célula</label>
+            <select value={cellId} onChange={(e) => setCellId(e.target.value)} className="input-glass">
+              <option value="">Sem célula</option>
+              {cells.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-white/40">Nova senha (deixe vazio pra manter)</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••" className="input-glass" />
+          </div>
+          <button onClick={save} disabled={saving || !name.trim()} className="btn-apple-primary w-full">
+            <Save className="h-4 w-4" /> {saving ? "Salvando..." : "Salvar"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -549,11 +643,13 @@ function TreeGroup({
   icon: Icon,
   members,
   ministries,
+  onEdit,
 }: {
   role: string;
   icon: typeof Crown;
   members: PersonAPI[];
   ministries: Ministry[];
+  onEdit: (p: PersonAPI) => void;
 }) {
   const [open, setOpen] = useState(true);
 
@@ -576,7 +672,7 @@ function TreeGroup({
       {open && (
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {members.map((p) => (
-            <div key={p.id} className="rounded-xl border border-white/10 bg-black/15 p-3">
+            <button key={p.id} onClick={() => onEdit(p)} className="rounded-xl border border-white/10 bg-black/15 p-3 text-left transition hover:border-white/25 hover:bg-white/5">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold text-white/70">
                   {p.name.charAt(0).toUpperCase()}
@@ -587,6 +683,7 @@ function TreeGroup({
                     <p className="text-[10px] text-white/40">{p.cell.name}</p>
                   )}
                 </div>
+                <Pencil className="h-3.5 w-3.5 text-white/20" />
               </div>
               {p.memberships.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1">
@@ -600,7 +697,7 @@ function TreeGroup({
                   ))}
                 </div>
               )}
-            </div>
+            </button>
           ))}
         </div>
       )}

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { isLeader } from "@/lib/roles";
+import { hashPassword } from "@/lib/password";
 
 export async function PATCH(
   req: NextRequest,
@@ -19,7 +20,9 @@ export async function PATCH(
     data: {
       ...(data.role ? { role: data.role } : {}),
       ...(data.name ? { name: data.name } : {}),
+      ...(data.email ? { email: data.email.toLowerCase() } : {}),
       ...(data.cellId !== undefined ? { cellId: data.cellId || null } : {}),
+      ...(data.password ? { passwordHash: hashPassword(data.password) } : {}),
     },
   });
   return NextResponse.json(person);
