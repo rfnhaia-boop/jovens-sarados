@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Home, Church, Plus, Users, UserCog, Crown, Shield, ChevronDown, ChevronRight as ChevRight, X, Pencil, Save } from "lucide-react";
+import { Home, Church, Plus, Users, UserCog, Crown, Shield, ChevronDown, ChevronRight as ChevRight, X, Pencil, Save, Eye, EyeOff } from "lucide-react";
 import { isLeader } from "@/lib/roles";
 
 type Cell = {
@@ -307,6 +307,7 @@ function EditPersonModal({
   const [role, setRole] = useState(person.role);
   const [cellId, setCellId] = useState(person.cell?.id ?? "");
   const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
   const [saving, setSaving] = useState(false);
 
   async function save() {
@@ -364,7 +365,12 @@ function EditPersonModal({
           </div>
           <div>
             <label className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-white/40">Nova senha (deixe vazio pra manter)</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••" className="input-glass" />
+            <div className="relative">
+              <input type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••" className="input-glass pr-10" />
+              <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
+                {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
           <button onClick={save} disabled={saving || !name.trim()} className="btn-apple-primary w-full">
             <Save className="h-4 w-4" /> {saving ? "Salvando..." : "Salvar"}
