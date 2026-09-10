@@ -81,8 +81,10 @@ model Person {
   cellId       String?
   cell         Cell?                @relation(fields: [cellId], references: [id])
   createdAt    DateTime             @default(now())
-  memberships  MinistryMembership[]
-  sessions     Session[]
+  memberships          MinistryMembership[]
+  sessions             Session[]
+  schedulesCreated     Schedule[]           @relation("SchedulesCreated")
+  scheduleAssignments  ScheduleAssignment[] @relation("ScheduleAssignments")
 }
 
 // Sessão de login (token guardado em cookie httpOnly)
@@ -132,6 +134,30 @@ model Post {
   platform    String // INSTAGRAM | STORIES | REELS | OUTRO
   status      String   @default("PLANEJADO") // PLANEJADO | PUBLICADO
   createdAt   DateTime @default(now())
+}
+
+// Escala: evento/culto com data (ex: Maranatá 15/09)
+model Schedule {
+  id          String               @id @default(cuid())
+  title       String
+  date        DateTime
+  createdById String
+  createdBy   Person               @relation("SchedulesCreated", fields: [createdById], references: [id])
+  createdAt   DateTime             @default(now())
+  assignments ScheduleAssignment[]
+}
+
+// Atribuição: servo escalado com função específica
+model ScheduleAssignment {
+  id         String   @id @default(cuid())
+  scheduleId String
+  personId   String
+  role       String // ex: Louvor, Acolhimento, Pregação, Oração, Mídia
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  person     Person   @relation("ScheduleAssignments", fields: [personId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([scheduleId, personId])
 }
 
 // Liga uma pessoa a um ministério (com aprovação). Pode ter vários.
