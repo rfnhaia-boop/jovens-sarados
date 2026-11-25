@@ -43,7 +43,44 @@
 .parish-times b { color: var(--amber-2); font-size: 13px; }
 .parish-times span { font-size: 11px; }
 
+.patrons { display: none; }
+
 @media (max-width: 760px) {
+  .section {
+    background-color: #031423;
+    background-image:
+      linear-gradient(180deg, rgba(2, 11, 20, .74), rgba(2, 11, 20, .9)),
+      url('https://chatgpt.com/api/library/files/libfile_81e4f771832081919327ef6241d25bf0/download');
+    background-size: cover;
+    background-position: center;
+  }
+  .welcome { background-position: center top; }
+  .community { background-position: center bottom; }
+  .patrons { display: block; padding: 90px 20px 100px; background-position: center; }
+  .patrons-intro > p:last-child { color: rgba(255,255,255,.67); line-height: 1.65; max-width: 34rem; }
+  .patrons h2 { margin-bottom: 20px; }
+  .patron-tabs { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; margin: 34px 0 20px; }
+  .patron-tab { min-width: 0; padding: 10px 5px 12px; border: 1px solid rgba(255,255,255,.12); border-radius: 18px; background: rgba(3,15,27,.74); color: rgba(255,255,255,.62); font: inherit; text-align: center; transition: .3s; }
+  .patron-tab img,.carlo-mark { display: grid; place-items: center; width: 54px; height: 54px; margin: 0 auto 8px; border-radius: 50%; object-fit: cover; object-position: top; background: #102a3d; }
+  .carlo-mark { color: var(--amber-2); font-weight: 900; letter-spacing: -.04em; }
+  .patron-tab span:last-child { display: block; font-size: 10px; line-height: 1.2; font-weight: 750; }
+  .patron-tab.active { color: white; border-color: rgba(255,159,10,.58); background: rgba(255,159,10,.1); transform: translateY(-4px); }
+  .patron-stage { position: relative; min-height: 540px; }
+  .patron-panel { position: absolute; inset: 0; opacity: 0; visibility: hidden; transform: translateX(28px) scale(.97); transition: .45s ease; overflow: hidden; border: 1px solid rgba(255,255,255,.14); border-radius: 28px; background: rgba(2,11,20,.88); box-shadow: 0 28px 60px rgba(0,0,0,.35); }
+  .patron-panel.active { opacity: 1; visibility: visible; transform: none; }
+  .patron-photo { position: relative; height: 250px; overflow: hidden; background: #071522; }
+  .patron-photo:after { content: ''; position: absolute; inset: 45% 0 0; background: linear-gradient(transparent,rgba(2,11,20,.98)); }
+  .patron-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .patron-photo.eucharistic img { object-position: center; }
+  .carlo-badge { position: absolute; z-index: 2; left: 16px; bottom: 16px; padding: 7px 10px; border-radius: 999px; background: rgba(2,11,20,.75); color: var(--amber-2); font-size: 9px; font-weight: 850; letter-spacing: .12em; backdrop-filter: blur(10px); }
+  .patron-content { position: relative; margin-top: -28px; padding: 0 22px 25px; z-index: 2; }
+  .patron-content small { color: var(--amber-2); font-size: 9px; font-weight: 850; letter-spacing: .16em; }
+  .patron-content h3 { margin: 8px 0 10px; font-size: 29px; line-height: 1; letter-spacing: -.04em; }
+  .patron-content p { margin: 0; color: rgba(255,255,255,.66); font-size: 14px; line-height: 1.55; }
+  .weekly-action { width: 100%; min-height: 48px; margin-top: 18px; border: 0; border-radius: 999px; background: linear-gradient(135deg,var(--amber-2),var(--amber)); color: #07111b; font-weight: 850; }
+  .weekly-note { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; margin-top: 22px; padding: 15px 18px; border-radius: 18px; background: rgba(2,11,20,.72); border: 1px solid rgba(255,255,255,.1); }
+  .weekly-note > span { grid-row: 1/3; width: 9px; height: 9px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 18px var(--amber); }
+  .weekly-note b { font-size: 13px; }.weekly-note small { color: var(--muted); font-size: 10px; }
   .hero h1 strong { text-shadow: none; }
   .fold { background: linear-gradient(145deg, #0a2740, #031423 55%, #0e304b); }
   .parish-card { grid-template-columns: auto 1fr; margin: 23px 0; padding: 16px; }
@@ -94,6 +131,34 @@
       <div class="timeline" id="timeline"></div>
     </section>
 
+    <section class="patrons section" id="padroeiros">
+      <div class="patrons-intro reveal">
+        <p class="eyebrow">Companhia para o caminho</p>
+        <h2>Nossos<br/><i>padroeiros.</i></h2>
+        <p>Cada história inspira uma missão concreta. Toda semana, uma nova experiência entra no site.</p>
+      </div>
+      <div class="patron-tabs" role="tablist" aria-label="Escolha um padroeiro">
+        <button class="patron-tab active" data-patron="alegria" role="tab" aria-selected="true"><img src="https://raw.githubusercontent.com/rfnhaia-boop/jovens-sarados/main/apps/web/public/images/js/nsa-alegria.png" alt=""/><span>Nossa Senhora<br/>da Alegria</span></button>
+        <button class="patron-tab" data-patron="joao" role="tab" aria-selected="false"><img src="https://raw.githubusercontent.com/rfnhaia-boop/jovens-sarados/main/apps/web/public/images/js/sjp2.png" alt=""/><span>São João<br/>Paulo II</span></button>
+        <button class="patron-tab" data-patron="carlo" role="tab" aria-selected="false"><span class="carlo-mark">CA</span><span>Carlo<br/>Acutis</span></button>
+      </div>
+      <div class="patron-stage reveal">
+        <article class="patron-panel active" data-panel="alegria">
+          <div class="patron-photo"><img src="https://raw.githubusercontent.com/rfnhaia-boop/jovens-sarados/main/apps/web/public/images/js/nsa-alegria.png" alt="Nossa Senhora da Alegria"/></div>
+          <div class="patron-content"><small>MISSÃO DA SEMANA</small><h3>Alegria que visita</h3><p>Escolha alguém que esteja vivendo um momento difícil. Faça uma visita, uma ligação ou uma oração junto dessa pessoa.</p><button class="weekly-action">Ver missão completa</button></div>
+        </article>
+        <article class="patron-panel" data-panel="joao">
+          <div class="patron-photo"><img src="https://raw.githubusercontent.com/rfnhaia-boop/jovens-sarados/main/apps/web/public/images/js/sjp2.png" alt="São João Paulo II"/></div>
+          <div class="patron-content"><small>DESAFIO DA SEMANA</small><h3>Não tenhais medo</h3><p>Uma proposta prática para enfrentar aquilo que paralisa a fé, a vocação e a coragem de servir.</p><button class="weekly-action">Começar o desafio</button></div>
+        </article>
+        <article class="patron-panel" data-panel="carlo">
+          <div class="patron-photo eucharistic"><img src="https://raw.githubusercontent.com/rfnhaia-boop/jovens-sarados/main/apps/web/public/images/js/eucaristia.jpg" alt="Adoração eucarística"/><span class="carlo-badge">CARLO ACUTIS</span></div>
+          <div class="patron-content"><small>PROJETO INTERATIVO</small><h3>Milagres Eucarísticos</h3><p>Um mapa vivo para conhecer um milagre por semana, sua cidade, contexto, documentos e significado para a fé.</p><button class="weekly-action">Explorar o primeiro caso</button></div>
+        </article>
+      </div>
+      <div class="weekly-note"><span></span><b>Novo conteúdo toda semana</b><small>Publicado pela equipe no painel</small></div>
+    </section>
+
     <section class="finale section" id="chegar">
       <div class="final-photo parallax" data-speed=".12"><img src="https://raw.githubusercontent.com/rfnhaia-boop/jovens-sarados/main/apps/web/public/images/js/media__1783228809195.jpg" alt="Comunidade Jovens Sarados reunida" /></div>
       <div class="final-shade"></div>
@@ -122,6 +187,7 @@ const observer=new IntersectionObserver(entries=>entries.forEach(e=>e.isIntersec
 let ticking=false;function update(){const y=scrollY;document.querySelector('.nav').classList.toggle('scrolled',y>50);document.querySelectorAll('.parallax').forEach(el=>{const r=el.parentElement.getBoundingClientRect(),speed=+el.dataset.speed||.1;el.style.transform=`translate3d(0,${r.top*speed}px,0)`});ticking=false}addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(update);ticking=true}},{passive:true});update();
 addEventListener('pointermove',e=>{document.documentElement.style.setProperty('--mx',`${e.clientX/innerWidth*100}%`);document.documentElement.style.setProperty('--my',`${e.clientY/innerHeight*100}%`)});
 const strip=document.querySelector('#filmstrip');let held=false,startX=0,startScroll=0;strip.addEventListener('pointerdown',e=>{held=true;startX=e.clientX;startScroll=strip.scrollLeft;strip.setPointerCapture(e.pointerId)});strip.addEventListener('pointermove',e=>{if(held)strip.scrollLeft=startScroll-(e.clientX-startX)});strip.addEventListener('pointerup',()=>held=false);strip.addEventListener('pointercancel',()=>held=false);
+document.querySelectorAll('.patron-tab').forEach(tab=>tab.addEventListener('click',()=>{const id=tab.dataset.patron;document.querySelectorAll('.patron-tab').forEach(item=>{const active=item===tab;item.classList.toggle('active',active);item.setAttribute('aria-selected',String(active))});document.querySelectorAll('.patron-panel').forEach(panel=>panel.classList.toggle('active',panel.dataset.panel===id))}));
 </script>
 </body>
 </html>
